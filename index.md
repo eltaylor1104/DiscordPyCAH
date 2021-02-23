@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Welcome to PyCah Docs
 
 You can use the [editor on GitHub](https://github.com/eltaylor1104/DiscordPyCAH/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 

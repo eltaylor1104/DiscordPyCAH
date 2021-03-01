@@ -76,7 +76,7 @@ class Troll(commands.Cog):
 
               embed = discord.Embed(colour=discord.Color.blurple(), title=title, url=url)
               embed.set_image(url=image)
-              embed.set_footer(text=f"🔺 {ups} 🔻 {downs} 💬 {comments}")
+              embed.set_footer(text=f"🔺 {ups} 💬 {comments}")
               await ctx.send(embed=embed, content=None)
 
 

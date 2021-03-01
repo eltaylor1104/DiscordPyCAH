@@ -28,7 +28,7 @@ def get_prefix(client,message):
 
 
 
-bot = commands.Bot(command_prefix=get_prefix,intents = discord.Intents.default())
+bot = commands.Bot(command_prefix=get_prefix, intents = discord.Intents.default())
 
 
 RICKROLL_FOUND_MESSAGE = "⚠️Rickroll Alert⚠️"

@@ -4,8 +4,8 @@ import asyncio
 
 class CAH(commands.Cog):
 
-  def __init__(self, client):
-    self.client = client
+  def __init__(self, bot):
+    self.bot = bot
 
   @commands.command(name='start', aliases=['s'], help='Starts a round of CAH.')
   async def start(self, ctx):
@@ -17,31 +17,45 @@ class CAH(commands.Cog):
     await msg.add_reaction('⏯️')
 
 
+  @commands.Cog.listener()
+  async def on_raw_reaction_add(self, payload):
+    #channel = self.bot.get_channel(payload.message_id)
+    guild = self.bot.get_guild(payload.guild_id)
+    channel = discord.utils.get(guild.channels, id=payload.channel_id)
+    msg = await channel.fetch_message(payload.message_id)
+    if msg.author.id == 815636133324914728:
+      await channel.send('weird')
+    
+  
+    
+    if payload.emoji.name == '➕':
+      await channel.send('you added a plus sign')
 
+
+    if payload.emoji.name == '➖':
+      await channel.send('you added a minus')
+
+      
+    if payload.emoji.name == '⏯️':
+      await channel.send('resoom')
+      
+
+
+
+
+
+
+  
+
+  @commands.command(name='end')
+  async def end(self, ctx):
+    em = discord.Embed(title="The game was ended.", description="Hope all had some good fun! ;)", color=ctx.author.color)
+    await ctx.send(em=embed)
 
   
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  @commands.command(name='end')
-  async def end(self, ctx):
-    msg = await ctx.send('The game was ended.')
-
-
-
-
-def setup(client):
-  client.add_cog(CAH(client)) 
+def setup(bot):
+  bot.add_cog(CAH(bot)) 

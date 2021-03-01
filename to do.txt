@@ -2,7 +2,7 @@ TO DO
 
 
 
-1. CAH Search reactions shit
-2. Some cool avatar transformation commands cause why not lmao
-3. sajkfndlsjfhdsjklfndsjklfdhsjkldhsjljthrew fdsjklfhdskjlfdshkljfuerwpbfdusaiuifdhsllahfdsaj;fdhjasklfdhusiloethdsuiofdpghvdsalufdhaiufdshaklufhdsuialthuerwapfhdsuafhdsau
-4. delete the above task.
+1. Stop having bot send messages when it adds it's own reactions
+2. figure out the thing at the top that send "FUCK OFF" anytime anyone adds a reactions
+3. start assigning tasks and getting cards
+4. figure out how to store users that are playing, but also allow it so that sepereate games could be going on in different servers.

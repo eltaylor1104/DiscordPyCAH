@@ -4,8 +4,8 @@ from discord.ext.commands import has_permissions
 from discord.ext.commands import MissingPermissions, BadArgument
 
 class Moderation(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command()
     @has_permissions(kick_members = True)
@@ -91,7 +91,7 @@ class Moderation(commands.Cog):
                 await ctx.send(embed = embed)
                 return
             else:
-                em = discord.Embed(title=  ":x: Add Role Successful!", color = ctx.author.color)
+                em = discord.Embed(title=  ":white_check_mark: Add Role Successful!", color = ctx.author.color)
                 em.add_field(name = "Reason:", value = f"`{reason}`")
                 em.add_field(name = "User:", value = f"{member.mention}")
                 em.add_field(name = "Role:", value = f"{role.mention}", inline = True)
@@ -395,5 +395,5 @@ class Moderation(commands.Cog):
         em = discord.Embed(title = f"Count of {channel.mention}", color = ctx.author.color, description = "There are {} messages in {}".format(count, channel.mention))
         await ctx.send(embed=em)
 
-def setup(client):
-    client.add_cog(Moderation(client))
+def setup(bot):
+    bot.add_cog(Moderation(bot))

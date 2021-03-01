@@ -21,7 +21,7 @@ cwd = str(cwd)
 
 def get_prefix(client,message):
 
-    with open("prefixes.json", "r") as f:
+    with open(r"json//prefixes.json", "r") as f:
         prefixes = json.load(f)
 
     return prefixes[str(message.guild.id)]
@@ -55,12 +55,12 @@ async def invite(ctx):
 async def on_guild_join(guild):
 
 
-    with open("prefixes.json", "r") as f:
+    with open(r"json//prefixes.json", "r") as f:
         prefixes = json.load(f)
 
     prefixes[str(guild.id)] = "c!"
 
-    with open("prefixes.json", "w") as f:
+    with open(r"json//prefixes.json", "w") as f:
         json.dump(prefixes,f)
 
 
@@ -68,12 +68,12 @@ async def on_guild_join(guild):
 @commands.has_permissions(administrator = True)
 async def changeprefix(ctx, prefix):
 
-    with open("prefixes.json", "r") as f:
+    with open(r"json//prefixes.json", "r") as f:
         prefixes = json.load(f)
 
     prefixes[str(ctx.guild.id)] = prefix
 
-    with open("prefixes.json", "w") as f:
+    with open(r"json//prefixes.json", "w") as f:
         json.dump(prefixes,f)    
 
     await ctx.send(f"The prefix was changed to {prefix}")

@@ -16,10 +16,10 @@ class Util(commands.Cog):
   async def on_ready(self):
     print('Bot is online. Yeeyee!')
 #commands
-  @commands.command()
-  async def ping(self, ctx):
-      await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
-  
+  @commands.command(name="ping")
+  async def ping_(self, ctx):
+    msg = await ctx.send("Pinging...")
+    await msg.edit(content=f":ping_pong: Pong! `{round(self.bot.latency * 1000)}ms`")
 
   @commands.command(aliases=["av"])
   @cooldown(1, 1, BucketType.user)
@@ -39,18 +39,18 @@ class Util(commands.Cog):
 
   @commands.Cog.listener()
   async def on_message_delete(self, msg):
-     file = json.load(open(r"snipe-dict.json", "r"))
+     file = json.load(open(r"json//snipe-dict.json", "r"))
      if not msg.author.bot:
       if not str(msg.guild.id) in file:
           file[str(msg.guild.id)] = {}
       file[str(msg.guild.id)]["user-id"] = msg.author.id
       file[str(msg.guild.id)]["content"] = msg.content
-      json.dump(file, open(r"snipe-dict.json", "w"), indent=4)
+      json.dump(file, open(r"json//snipe-dict.json", "w"), indent=4)
 
   @commands.command()
   @cooldown(1, 5, BucketType.user)
   async def snipe(self, ctx):
-     file = json.load(open(r"snipe-dict.json", "r"))
+     file = json.load(open(r"json//snipe-dict.json", "r"))
      if not str(ctx.guild.id) in file:
          return await ctx.send("There's nothing to snipe!")
     
@@ -74,19 +74,19 @@ class Util(commands.Cog):
 
   @commands.Cog.listener()
   async def on_message_edit(self, msg_before, msg_after):
-     file = json.load(open(r"editsnipe-dict.json", "r"))
+     file = json.load(open(r"json//editsnipe-dict.json", "r"))
      if not msg_before.author.bot:
       if not str(msg_before.guild.id) in file:
           file[str(msg_before.guild.id)] = {}
       file[str(msg_before.guild.id)]["user-id"] = msg_before.author.id
       file[str(msg_after.guild.id)]["before-content"] = msg_before.content
       file[str(msg_after.guild.id)]["after-content"] = msg_after.content
-      json.dump(file, open(r"editsnipe-dict.json", "w"), indent=4)
+      json.dump(file, open(r"json//editsnipe-dict.json", "w"), indent=4)
 
   @commands.command()
   @cooldown(1, 5, BucketType.user)
   async def editsnipe(self, ctx):
-      file = json.load(open(r"editsnipe-dict.json", "r"))
+      file = json.load(open(r"json//editsnipe-dict.json", "r"))
       if not str(ctx.guild.id) in file:
           return await ctx.send("There's nothing to snipe!")
     

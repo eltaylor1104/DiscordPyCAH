@@ -6,7 +6,22 @@ from discord.ext.commands import MissingPermissions, BadArgument
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    #CREDIT: BobDotCom on github for the following Moderation commands. THESE ARE NOT MINE!!!
 
+    @commands.command(aliases=['nick'], help="Change the nickname of a user.")
+    @commands.has_guild_permissions(manage_nicknames=True)
+    async def nickname(self, ctx, member : discord.Member, *args):
+        if member == None:
+            await ctx.send('Give me a user please')
+        elif member == ctx.guild.owner:
+            await ctx.send('You cant name the owner!')
+        else:
+          try:
+            x = ' '.join(map(str, args))
+            await member.edit(nick=f'{x}')
+            await ctx.send(f'{member.name} has been changed to {x}')
+          except:
+            await ctx.send("I cant")
     @commands.command()
     @has_permissions(kick_members = True)
     async def kick(self, ctx, member : discord.Member = None, *, reason = None):
@@ -176,53 +191,52 @@ class Moderation(commands.Cog):
             em.add_field(name = "Reason:", value = "`Ping a user and a role to remove the role from the user!`")
             em.set_footer(text = "Remove Role properly already!")
             await ctx.send(embed = em)
-    
+    #The following two commands belong to BobDotCom on Github. They are NOT MY CODE!!
     @commands.command()
-    @has_permissions(ban_members = True)
-    async def ban(self, ctx, member : discord.Member = None, *,reason = None):
-        try:
-            if member == None:
-                embed = discord.Embed(title = ":x: Ban Failed!", color= ctx.author.color)
-                embed.add_field(name = "Reason:", value = "Ping a user to ban them!")
-                await ctx.send(embed = embed)
-                return
-            if member == ctx.author:
-                em = discord.Embed(title = ':x: Ban Failed', color = ctx.author.color)
-                em.add_field(name = 'Reason:', value = f"You can't ban yourself ;-;")
-                em.add_field(name = "Next Steps:", value = "Try to ban someone else idunno")
-                em.set_footer(text = "imagine banning urself, couldn't be me!")
-                await ctx.send(embed=  em)
-                return
+    @commands.has_permissions(ban_members = True)
+    @commands.cooldown(1, 1, commands.BucketType.channel)
+    async def ban(self, ctx, member: discord.Member, *,reason: str = None):
+        """Ban a member with an optional delete_days parameter
+        The reason must not start with a number, and you may give a reason without deleting messages"""
+        if True:
             try:
-                await member.send(f"You were banned in {ctx.guild.name}\nReason: `{reason}`\nModerator: `{ctx.author.name}`")
+                asdf = ctx.author
+                f = member.top_role
+                h = asdf.top_role
+                if h > f or ctx.guild.owner == ctx.author and not member == ctx.author:
+                  if member.guild_permissions.ban_members and not ctx.guild.owner == ctx.author:
+                    await ctx.send("This person has to not have the ban members permission.")
+                  else:
+                    await member.ban(delete_message_days=delete_days, reason="Banned by: " + ctx.author.mention + ": " + (reason or "No reason specified"))
+                    await ctx.send("Ok, I banned them for you")
+                else:
+                  if member == ctx.author:
+                    await ctx.send("You can't ban yourself. -_-")
+                  else:
+                    await ctx.send("Error, this person has a higher or equal role to you")
+            except:
+                await ctx.send(f"Hmmm, I do not have permission to ban {member}, or that is not a valid member")
+            try:
+                await member.send(f"You have been **banned** from **{ctx.guild}** server due to the following reason:\n**{reason}**")
             except:
                 pass
-            await member.ban(reason = reason)
-            em = discord.Embed(title = f"<:success:761297849475399710> Ban was successful!", color = ctx.author.color)
-            em.add_field(name = f"Victim:", value = f"`{member.name}`")
-            em.add_field(name = "Reason: ", value = f"`{reason}`")
-            em.add_field(name = "**Moderator**:", value = f"`{ctx.author.name}`")
-            em.set_footer(text = f"{member.name} said bye!")
-            await ctx.send(embed = em)
 
+    @commands.command(help="Ban a user by their id.",aliases=['idban'])
+    @commands.bot_has_guild_permissions(ban_members=True)
+    @commands.has_guild_permissions(ban_members=True)
+    async def hackban(self, ctx, user_id: int, *, reason: str = None):
+        
+        member = ctx.guild.get_member(user_id)
+        if member:
+            ban = self.bot.get_command('ban')
+            return await ctx.invoke(ban,member=user_id,reason=reason)
+        try:
+            class user:
+                id = user_id
+            await ctx.guild.ban(user,reason=reason)
+            await ctx.send("Successfully banned user id **{}** with reason: **{}**. Check the audit logs to make sure I banned the right person.".format(user.id, reason))
         except:
-            em = discord.Embed(title = ":x: Ban Failed!", color = discor.Color.red())
-            em.add_field(name = 'Reason', value =f"{member.mention} is a moderator or an admin!")
-            em.add_field(name = "Contact support!", value = "This could also be due to the hierarchy!")
-            await ctx.send(embed = em)
-
-    @ban.error
-    async def ban_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            em = discord.Embed(title = ":x: Ban Failed!", color = ctx.author.color)
-            em.add_field(name = "Reason:", value = "`Ban members Permission Missing!`")
-            em.set_footer(text = "Imagine thinking you have the perms!")
-            await ctx.send(embed = em)
-        if isinstance(error, commands.BadArgument):
-            em = discord.Embed(title = ":x: Ban Failed!", color = ctx.author.color)
-            em.add_field(name = "Reason:", value = "`Ping a user to Ban them!`")
-            em.set_footer(text = "Ban properly already!")
-            await ctx.send(embed = em)
+            return await ctx.send("I couldn't do that")
 
     @commands.command()
     @commands.has_permissions(manage_channels = True)
@@ -349,24 +363,29 @@ class Moderation(commands.Cog):
             embed.set_footer(text = "Imagine thinking you have the perms!")
             await ctx.send(embed = embed)
 
-    @commands.command()
-    @has_permissions(ban_members = True)
-    async def unban(ctx, member : str, *, reason = None):
-        banned_users = await ctx.guild.bans()
-        member_name, member_disc = member.split("#")
+    @commands.command(name="unban")
+    @commands.has_guild_permissions(ban_members=True)
+    async def unban(self, ctx, username: str = None, *, reason=None):
+        if username is None:
+            await ctx.send("Insufficient arguments.")
+        else:
+            banned_users = await ctx.guild.bans()
+            member_name, member_discriminator = username.split('#')
 
-        for banned_entry in banned_users:
-            user = banned_entry.user
+            for ban_entry in banned_users:
+                user = ban_entry.user
 
-            if (user.name, user.discriminator) == (member_name, member_disc):
-                await ctx.guild.unban(user)
-                embed = discord.Embed(title = f"{member_name} was unbanned!", color = ctx.author.color)
-                embed.add_field(name = "Reason:", value = f"`{reason}`")
-                embed.add_field(name = "Moderator:", value = f"`{ctx.author.name}`")
-                await ctx.send(embed = embed)
-                return
+                if (user.name, user.discriminator) == (member_name, member_discriminator):
+                    await ctx.guild.unban(user,reason="Unbanned by: " + ctx.author.mention + ": " + (reason or "No reason specified"))
 
-        await ctx.send("Not a valid user, try it like this:\n`imp unban name#disc`")
+            try:
+                if reason:
+                    await ctx.send(f"User **{username}** has been unbanned for reason: **{reason}**.")
+                else:
+                    await ctx.send(f"User **{username}** has been unbanned.")
+                await user.send(f"You have been **unbanned** from **{ctx.guild}** server due to the following reason:\n**{reason}**")
+            except NameError:
+                await ctx.send(f"{username} is has not been banned in this server.")
 
     #normal function
     def convert(self, time):

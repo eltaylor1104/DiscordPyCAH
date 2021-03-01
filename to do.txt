@@ -6,3 +6,30 @@ TO DO
 2. figure out the thing at the top that send "FUCK OFF" anytime anyone adds a reactions
 3. start assigning tasks and getting cards
 4. figure out how to store users that are playing, but also allow it so that sepereate games could be going on in different servers.
+
+
+
+if msg.author.id == 815636133324914728:
+      await channel.send('weird')
+
+      
+functions:
+def add_to_game():
+      #code shit that adds user to the db/records where the bot can call upon/dm them with their cards and displays them in the lb. making this a function cuz the it's ez later to just on_reactions_add: add_to_game. ez w.
+
+
+    def remove_from_game():
+      #same as above but removing
+
+    def update_trivia_scores():
+      #literally look at the Name
+
+    def get_trivia_scores():
+      #gets trivia scores lmao
+
+    def get_white_cards():
+      #opens a json for white compile
+
+
+    def get_black_cards():
+      opens the json for black cards

@@ -108,7 +108,37 @@ class Util(commands.Cog):
       await ctx.message.reply(embed=em)
     else:
       await ctx.send(f"**An Unknown Error Occurred**\n\nAn unknown error occured in the `{ctx.command.name}` command.)")
-
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def blacklist(self,ctx,action,user_id,time_amount='Permanent',*,reason=None):
+        user_id = int(user_id)
+        with open(r"json//blacklisted.json",'r') as f:
+            data = json.load(f)
+        data['users'] = data['users'] or []
+        if action == "add":
+            data['users'].append(user_id)
+        elif action == 'remove':
+            data['users'].remove(user_id)
+        self.client.blacklisted = data["users"]
+        with open(r"json//blacklisted.json",'w') as f:
+            json.dump(data,f,indent=4)
+        if not time_amount.lower() in ['permanent',"forever"]:
+            time_amount = f"**{time_amount}** \nOnce this time is up, you may make an appeal to my developer."
+        else:
+            time_amount = f"**{time_amount}**"
+        try:
+            user = self.client.get_user(user_id)
+            if action == "add":
+                embed = discord.Embed(title="You've been blacklisted!",description=f"This means you will not be able to use the bot. If you would like to appeal this, or if you think this is a mistake, please contact my developer {self.client.get_user(self.client.owner_ids[0])}.",color=discord.Color.red())
+                embed.add_field(name='Time',value=time_amount)
+                embed.add_field(name='Reason',value=reason or 'None specified')
+                await user.send(embed=embed)
+                await ctx.send(f'Successfully blacklisted {user}')
+            elif action == 'remove':
+                await user.send('You have been removed from the blacklist. You may use the bot now.')
+                await ctx.send(f'Successfully unblacklisted {user}')
+        except:
+            await ctx.send('failed')
 
 def setup(bot):
   bot.add_cog(Util(bot))    

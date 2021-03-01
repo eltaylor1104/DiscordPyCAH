@@ -23,9 +23,9 @@ class CAH(commands.Cog):
     guild = self.bot.get_guild(payload.guild_id)
     channel = discord.utils.get(guild.channels, id=payload.channel_id)
     msg = await channel.fetch_message(payload.message_id)
-    if msg.author.id == 815636133324914728:
-      await channel.send('weird')
     
+  
+      
   
     
     if payload.emoji.name == '➕':
@@ -40,7 +40,10 @@ class CAH(commands.Cog):
       await channel.send('resoom')
       
 
+    ## I have no fucking clue how to fill in these functions, but I wanted to have them, becuase once they are here shit gets a lot easier when you just have to call upon functions to do shit instead of keep rewriting xD
 
+
+    
 
 
 

@@ -17,7 +17,34 @@ cwd = str(cwd)
 
 
 
+def get_prefix(client, message):
+	if not message.guild:
+		return ['C!', 'c!']
+	with open(r'json//prefixes.json', 'r') as f:
+		prefixes = json.load(f)
+	try:
+		x = prefixes[str(message.guild.id)]
+	except:
+		x = ["C.","c."]
+	if x == []:
+		x += ["C.","c.",]
+	if not client.user.id == 745044803732897802:
+		return commands.when_mentioned_or(*x)(client, message)
+	else:
+		y = ['C,','c,',]
+		return commands.when_mentioned_or(*y)(client, message)
 
+
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix=get_prefix,intents=intents,case_insensitive = True)
+try:
+    with open(r'json//blacklisted.json','r') as f:
+        data = json.load(f)
+    bot.blacklisted = data['users']
+except:
+    bot.blacklisted = []
+    print('Blacklist not loaded')
 
 def get_prefix(client,message):
 
@@ -28,7 +55,6 @@ def get_prefix(client,message):
 
 
 
-bot = commands.Bot(command_prefix=get_prefix, intents = discord.Intents.default())
 
 
 RICKROLL_FOUND_MESSAGE = "⚠️Rickroll Alert⚠️"

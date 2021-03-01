@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands 
 import asyncio
 import asyncpraw
+import aiohttp
 import random
 class Troll(commands.Cog):
 
@@ -41,7 +42,7 @@ class Troll(commands.Cog):
       em.add_field(name=  "Inviter:", value = f"{ctx.author.mention}")
       if reason is not None:
           em.add_field(name = "Reason:", value = f"`{reason}`")
-      msg = await ctx.send(content = f"{member.mention} to accept {ctx.author.mention}'s beer invite. React with beer to this embed!", embed = em)
+      msg = await ctx.send(content = f"{member.mention} to accept {ctx.author.mention}'s beer invite, react with beer to this embed!", embed = em)
       await msg.add_reaction("<:PepeBeer:814030852605476874>")
 
       def check(reaction, user):
@@ -59,32 +60,49 @@ class Troll(commands.Cog):
           return await msg.edit(embed = successEmbed, content = f"{member.mention} accepted the beer!")
 
 
-  @commands.command()
+  @commands.command(aliases=['memes'])
   async def meme(self, ctx):
-      reddit  = asyncpraw.Reddit(client_id = "l5KErE-xWO6ugA", client_secret = "yHowpfj4lWcAhkLRkRRduQBMVK-WcA", username = "eltaylor1104", password = "Stingers1*", user_agent = "ios:com.memebot.myredditapp:2021.06.0.307548 (by u/eltaylor1104)")
-      subreddit = await  reddit.subreddit("memes")
- 
-      all_subs = []
- 
-      async for submission in subreddit.hot(limit=300):
-              all_subs.append(submission)
-              random_sub = random.choice(all_subs)
-              name = random_sub.title
-              url = random_sub.url
-              score = random_sub.score
- 
- 
-      embed = discord.Embed(
-            title = f'{name}',
-            url = f'{url}',
-            color = int("0x{:06x}".format(random.randint(0, 0xFFFFFF)), 16)
-        )
- 
- 
-      embed.set_author(name=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-      embed.set_image(url=url)
-      embed.set_footer(text=f"👍 {score}")
- 
+      async with aiohttp.ClientSession() as cs:
+          async with cs.get('https://www.reddit.com/r/memes/random/.json') as r:
+              res = await r.json()
+
+              image= res[0]['data']['children'][0]['data']['url']
+              permalink= res[0]['data']['children'][0]['data']['permalink']
+              url = f'https://reddit.com{permalink}'
+              title = res[0]['data']['children'][0]['data']['title']
+              ups = res[0]['data']['children'][0]['data']['ups']
+              downs = res[0]['data']['children'][0]['data']['downs']
+              comments = res[0]['data']['children'][0]['data']['num_comments']
+
+              embed = discord.Embed(colour=discord.Color.blurple(), title=title, url=url)
+              embed.set_image(url=image)
+              embed.set_footer(text=f"🔺 {ups} 🔻 {downs} 💬 {comments}")
+              await ctx.send(embed=embed, content=None)
+
+
+
+  @commands.command()
+  @commands.guild_only()
+  @commands.cooldown(1, 5, commands.BucketType.user)
+  async def trash(self, ctx, user: discord.Member = None):
+      """It's Trash smh! """
+      
+      if user == None:
+          user = ctx.author
+
+      await ctx.trigger_typing()
+      url = user.avatar_url_as(format="jpg")
+      async with aiohttp.ClientSession() as cs:
+          async with cs.get("https://nekobot.xyz/api/imagegen type=trash&url=%s" % (url,)) as r:
+              res = await r.json()
+              embed = discord.Embed(
+                  title = "Trash SMH!",
+                  color=0x5f3fd8
+
+              )
+              embed.set_image(url=res['message'])
+              embed.set_author(name = f"{user.name}" , icon_url = user.avatar_url)
+              embed.set_footer(text=f'Requested by {user.name}',icon_url = user.avatar_url)
       await ctx.send(embed=embed)
 def setup(client):
   client.add_cog(Troll(client)) 

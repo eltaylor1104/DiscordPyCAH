@@ -6,9 +6,6 @@ import logging
 import rickroll_detector
 from discord.ext import commands
 from rickroll_detector import find_rickroll
-
-
-
 from pathlib import Path
 import keep_alive
 from discord.ext import commands
@@ -46,6 +43,13 @@ async def on_message(msg):
             break
 
     await bot.process_commands(msg)
+
+
+@bot.command()
+async def invite(ctx):
+  embed = discord.Embed(title='pls invite me I am desperate. k thx bai', color=ctx.author.color, description=f"[Click here to invite me to your server.](https://discord.com/api/oauth2/authorize?client_id={bot.user.id}&permissions=8&scope=bot)")
+  await ctx.send(embed=embed)
+
 
 @bot.event
 async def on_guild_join(guild):

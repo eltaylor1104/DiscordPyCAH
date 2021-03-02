@@ -328,6 +328,14 @@ zstd = ["zstandard"]
 
 [[package]]
 category = "main"
+description = "API rate limit decorator"
+name = "ratelimit"
+optional = false
+python-versions = "*"
+version = "2.2.1"
+
+[[package]]
+category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = false
@@ -425,7 +433,7 @@ python-versions = "*"
 version = "2021.2.22"
 
 [metadata]
-content-hash = "160708f7c7fe51c4b184d010c85667b8f9dd71f75531f0ec918884b3d37c5933"
+content-hash = "e690f2be6605f349f7f9fe235b709e3f32be748a789df0995e5e17c8d05e5f0b"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -714,6 +722,9 @@ pymongo = [
     {file = "pymongo-3.11.3-cp39-cp39-win_amd64.whl", hash = "sha256:ee42a8f850143ae7c67ea09a183a6a4ad8d053e1dbd9a1134e21a7b5c1bc6c73"},
     {file = "pymongo-3.11.3-py2.7-macosx-10.14-intel.egg", hash = "sha256:7edff02e44dd0badd749d7342e40705a398d98c5d8f7570f57cff9568c2351fa"},
     {file = "pymongo-3.11.3.tar.gz", hash = "sha256:db5098587f58fbf8582d9bda2462762b367207246d3e19623782fb449c3c5fcc"},
+]
+ratelimit = [
+    {file = "ratelimit-2.2.1.tar.gz", hash = "sha256:af8a9b64b821529aca09ebaf6d8d279100d766f19e90b5059ac6a718ca6dee42"},
 ]
 requests = [
     {file = "requests-2.15.1-py2.py3-none-any.whl", hash = "sha256:ff753b2196cd18b1bbeddc9dcd5c864056599f7a7d9a4fb5677e723efa2b7fb9"},

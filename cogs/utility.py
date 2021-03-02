@@ -37,6 +37,12 @@ class Util(commands.Cog):
             icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
+  @commands.command(hidden=True, aliases=['readthedocs','rtd'])
+  @commands.is_owner()
+  async def docs(self, ctx):
+    embed = discord.Embed(title="Read my docs!", description="[Click here to read the docs.](https://eltaylor1104.github.io/DiscordPyCAH/)",color=discord.Color.blurple())
+    embed.set_footer(text="pls read them smh ;-;")
+    await ctx.send(embed=embed)
   @commands.Cog.listener()
   async def on_message_delete(self, msg):
      file = json.load(open(r"json//snipe-dict.json", "r"))

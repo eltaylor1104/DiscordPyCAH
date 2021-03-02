@@ -31,7 +31,7 @@ class CAH(commands.Cog):
     if payload.emoji.name == '➕':
       await channel.send('you added a plus sign')
 
-
+                
     if payload.emoji.name == '➖':
       await channel.send('you added a minus')
 
@@ -40,11 +40,27 @@ class CAH(commands.Cog):
       await channel.send('resoom')
       
 
-    ## I have no fucking clue how to fill in these functions, but I wanted to have them, becuase once they are here shit gets a lot easier when you just have to call upon functions to do shit instead of keep rewriting xD
+    #functions:
+    #def add_to_game():
+      #code shit that adds user to the db/records where the bot can call upon/dm them with their cards and displays them in the lb. making this a function cuz then it's ez later to just on_reactions_add: add_to_game. ez w.
 
 
+    #def remove_from_game():
+      #same as above but removing
+
+    #def update_trivia_scores():
+      #literally look at the Name
+
+    #def get_trivia_scores():
+      #gets trivia scores lmao
+
+    #def get_white_cards():
+      #opens a json for white compile
+
+
+    #def get_black_cards():
+      #opens the json for black cards
     
-
 
 
 

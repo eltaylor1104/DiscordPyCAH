@@ -9,6 +9,7 @@ from rickroll_detector import find_rickroll
 from pathlib import Path
 import keep_alive
 from discord.ext import commands
+from ratelimit import limits
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 cwd = Path(__file__).parents[0]
@@ -28,7 +29,7 @@ def get_prefix(client, message):
 		x = ["C.","c."]
 	if x == []:
 		x += ["C.","c.",]
-	if not client.user.id == 745044803732897802:
+	if not client.user.id == :
 		return commands.when_mentioned_or(*x)(client, message)
 	else:
 		y = ['C,','c,',]

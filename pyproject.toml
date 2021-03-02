@@ -14,6 +14,7 @@ asyncpraw = "^7.2.0"
 jishaku = "^1.20.0"
 pymongo = "^3.11.3"
 discord-ext-slash = "^0.4.0"
+ratelimit = "^2.2.1"
 
 [tool.poetry.dev-dependencies]
 

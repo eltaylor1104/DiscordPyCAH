@@ -8,11 +8,18 @@ from random import randint
 from random import choice
 from urllib.parse import quote_plus
 from collections import deque
+from ratelimit import limits
+
+import requests
+
+FIFTEEN_MINUTES = 900
+
+
 
 
 #CREDIT TO BobDotCom on GitHub and Discord for part of this code, primarily the reddit commands. THAT IS NOT MY CODE!
 
-acceptableImageFormats = [".png",".jpg",".jpeg",".gif",".gifv",".webm",".mp4","imgur.com"]
+acceptableImageFormats = [".png",".jpg",".jpeg",".gif",".gifv","imgur.com"]
 memeHistory = deque()
 memeSubreddits = ["BikiniBottomTwitter", "memes", "2meirl4meirl", "deepfriedmemes", "MemeEconomy"]
 async def getSub(self, ctx, subreddit):
@@ -37,7 +44,7 @@ async def getSub(self, ctx, subreddit):
           if subredditDict['selftext'] != "&amp;#x200B;":
                 await ctx.send(embed = embed)
           else:
-                await ctx.send("Annoying error with reddit being stupid please re use the command thanks")
+                await ctx.send("Annoying error with reddit being stupid. Try again lmao")
     else:
       try: 
         return await ctx.send("_{}! ({})_".format(str(subredditDict['message']), str(subredditDict['error'])))
@@ -92,89 +99,17 @@ async def getSubs(self, ctx, sub):
               return
       await ctx.send("_{}! ({})_".format(str(request['message']), str(request['error'])))
 
-class Troll(commands.Cog):
+class Reddit(commands.Cog):
   def __init__(self, client):
     self.client = client
 
+  @limits(calls=15, period=FIFTEEN_MINUTES)
+  def call_api(url):
+    response = requests.get(url)
 
-  @commands.command(help='Creates a countdown to Rickroll Message.')
-  @commands.has_permissions(manage_messages=True)
-  async def rick(self, ctx, time:int):
-    await ctx.message.delete()
-    if time > 1000:
-        await ctx.send("O-oni-chan... I can't wait that long-")
-        return
-    count = time
-    one = await ctx.send(f"Rickrolling you in {count}")
-    for i in range(time):
-        count -= 1
-        await asyncio.sleep(1)
-        await one.edit(content=f"Rickrolling you in {count}")
-    await one.edit(content="https://youtu.be/dQw4w9WgXcQ")
-
-
-
-  #Beer 
-  @commands.command()
-  @commands.cooldown(1, 5, commands.BucketType.user)
-  async def beer(self, ctx, member : discord.Member = None, *, reason = None):
-      if member is None:
-          return await ctx.send(f"{ctx.author.name}'s party!! :tada::beer:")
-      
-      if member == self.client.user:
-          return await ctx.send("drinks beer with you* :beers:")
-      
-      em = discord.Embed(title = "Beer Invitation :beer:", color = ctx.author.color)
-      em.add_field(name = "Member:", value = f"{member.mention}")
-      em.add_field(name=  "Inviter:", value = f"{ctx.author.mention}")
-      if reason is not None:
-          em.add_field(name = "Reason:", value = f"`{reason}`")
-      msg = await ctx.send(content = f"{member.mention} to accept {ctx.author.mention}'s beer invite, react with beer to this embed!", embed = em)
-      await msg.add_reaction("<:PepeBeer:814030852605476874>")
-
-      def check(reaction, user):
-          return user == member and str(reaction.emoji) == "<:PepeBeer:814030852605476874>"
-
-      try:
-          reaction, user = await self.client.wait_for('reaction_add', timeout=120.0, check=check)
-
-      except asyncio.TimeoutError:
-          msg=(f"{member.mention} didn't accept the beer in time!")
-          await ctx.channel.send(msg)
-
-      else:
-          successEmbed = discord.Embed(title = "<a:success:814032076138348584> Beer Successful!", color = ctx.author.color, description = f"{member.name} and {ctx.author.name} are enjoing a lovely beer :beers:!").add_field(name = "Member:", value = f"{member.mention}").add_field(name=  "Inviter:", value = f"{ctx.author.mention}")
-          return await msg.edit(embed = successEmbed, content = f"{member.mention} accepted the beer!")
-
-
-
-
-
-
-  @commands.command()
-  @commands.guild_only()
-  @commands.cooldown(1, 5, commands.BucketType.user)
-  async def trash(self, ctx, user: discord.Member = None):
-      """It's Trash smh! """
-      
-      if user == None:
-          user = ctx.author
-
-      await ctx.trigger_typing()
-      url = user.avatar_url_as(format="jpg")
-      async with aiohttp.ClientSession() as cs:
-          async with cs.get("https://nekobot.xyz/api/imagegen type=trash&url=%s" % (url,)) as r:
-              res = await r.json()
-              embed = discord.Embed(
-                  title = "Trash SMH!",
-                  color=0x5f3fd8
-
-              )
-              embed.set_image(url=res['message'])
-              embed.set_author(name = f"{user.name}" , icon_url = user.avatar_url)
-              embed.set_footer(text=f'Requested by {user.name}',icon_url = user.avatar_url)
-      await ctx.send(embed=embed)
-     
+    if response.status_code != 200:
+        raise Exception('API response: {}'.format(response.status_code))
+    return response 
       
   @commands.command(aliases=['st','shower'])
   @commands.cooldown(1, 1, commands.BucketType.channel)
@@ -230,10 +165,31 @@ class Troll(commands.Cog):
       
   @commands.command(aliases=["r"])
   @commands.cooldown(1, 1, commands.BucketType.channel)
-  async def reddit(self, ctx, arg):
+  async def subreddit(self, ctx, arg):
     """Get an image from a subreddit."""
     async with ctx.typing():
       await getSub(self, ctx, arg)
+
+  @commands.command(aliases=["dunmiff"])
+  @commands.cooldown(1, 1, commands.BucketType.channel)
+  async def dundermifflin(self, ctx):
+    """Get an image from the DunderMifflin subreddit."""
+    async with ctx.typing():
+      await getSub(self, ctx, 'DunderMifflin')
+
+  @commands.command(aliases=["bpt"])
+  @commands.cooldown(1, 1, commands.BucketType.channel)
+  async def blackpeopletwitter(self, ctx):
+    """Get an image from the Black People Twitter subreddit."""
+    async with ctx.typing():
+      await getSub(self, ctx, 'BlackPeopleTwitter')
+
+  @commands.command(aliases=["wpt"])
+  @commands.cooldown(1, 1, commands.BucketType.channel)
+  async def whitepeopletwitter(self, ctx):
+    """Get an image from the White People Twitter subreddit."""
+    async with ctx.typing():
+      await getSub(self, ctx, 'WhitePeopleTwitter')
 
   @commands.command()
   @commands.cooldown(1, 1, commands.BucketType.channel)
@@ -280,4 +236,4 @@ class Troll(commands.Cog):
               return
         await ctx.send(url="_{}! ({})_".format(str(request['message']), str(request['error'])))
 def setup(client):
-  client.add_cog(Troll(client)) 
+  client.add_cog(Reddit(client)) 

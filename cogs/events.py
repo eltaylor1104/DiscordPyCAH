@@ -3,9 +3,6 @@ from discord.ext import commands
 import random
 import datetime
 
-# In cogs we make our own class
-# for d.py which subclasses commands.Cog
-
 class Events(commands.Cog):
 
         def __init__(self, bot):
@@ -25,7 +22,7 @@ class Events(commands.Cog):
                 embed.set_thumbnail(url=member.avatar_url)
                 embed.set_author(name=member.name, icon_url=member.avatar_url)
                 embed.set_footer(text=member.guild, icon_url=member.guild.icon_url)
-                embed.timestamp = datetime.datetime.utcnow()
+                embed.timestamp = ctx.message_created_at()
 
                 await channel.send(embed=embed)
 

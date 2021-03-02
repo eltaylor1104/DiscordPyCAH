@@ -414,5 +414,24 @@ class Moderation(commands.Cog):
         em = discord.Embed(title = f"Count of {channel.mention}", color = ctx.author.color, description = "There are {} messages in {}".format(count, channel.mention))
         await ctx.send(embed=em)
 
+    @commands.command()
+    @commands.has_permissions(manage_channels=True)
+    async def marknsfw(self,ctx):
+      await ctx.channel.edit(nsfw=True)
+      em = discord.Embed(title = ":white_check_mark: Change in channel settings", color = ctx.author.color)
+      em.add_field(name = "**Responsible Moderator:**", value = f"`{ctx.author.name}`")
+      em.add_field(name = "NSFW", value = f"`True`")
+      await ctx.send(embed = em)
+
+    @commands.command(aliases=["nsfwoff"])
+    @commands.has_permissions(manage_channels=True)
+    async def disablensfw(self,ctx):
+      await ctx.channel.edit(nsfw=False)
+      em = discord.Embed(title = ":white_check_mark: Change in channel settings", color = ctx.author.color)
+      em.add_field(name = "**Responsible Moderator:**", value = f"`{ctx.author.name}`")
+      em.add_field(name = "NSFW", value = f"`Off`")
+      await ctx.send(embed = em)
+
+
 def setup(bot):
     bot.add_cog(Moderation(bot))

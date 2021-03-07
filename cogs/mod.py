@@ -8,6 +8,15 @@ class Moderation(commands.Cog):
         self.bot = bot
     #CREDIT: BobDotCom on github for the following Moderation commands. THESE ARE NOT MINE!!!
 
+    @commands.command(name='create-channel', help="Admin Only")
+    @commands.has_permissions(administrator=True)
+    async def create_channel(self, ctx, channel_name='Unnamed-Channel'):
+        guild = ctx.guild
+        existing_channel = discord.utils.get(guild.channels, name=channel_name)
+        if not existing_channel:
+            await guild.create_text_channel(channel_name)
+
+
     @commands.command(aliases=['nick'], help="Change the nickname of a user.")
     @commands.has_guild_permissions(manage_nicknames=True)
     async def nickname(self, ctx, member : discord.Member, *args):

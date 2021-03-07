@@ -3,9 +3,7 @@ import os
 import random
 import json
 import logging
-import rickroll_detector
 from discord.ext import commands
-from rickroll_detector import find_rickroll
 from pathlib import Path
 import keep_alive
 from discord.ext import commands
@@ -29,7 +27,7 @@ def get_prefix(client, message):
 		x = ["C.","c."]
 	if x == []:
 		x += ["C.","c.",]
-	if not client.user.id == :
+	if not client.user.id == 815636133324914728:
 		return commands.when_mentioned_or(*x)(client, message)
 	else:
 		y = ['C,','c,',]
@@ -58,18 +56,6 @@ def get_prefix(client,message):
 
 
 
-RICKROLL_FOUND_MESSAGE = "⚠️Rickroll Alert⚠️"
-
-
-@bot.event
-async def on_message(msg):
-    for i in msg.content.split(" "):
-        i = i.replace("<","").replace(">", "") #Removes <> that could be used to hide embeds
-        if "https://" in i and find_rickroll(i):
-            await msg.reply(RICKROLL_FOUND_MESSAGE)
-            break
-
-    await bot.process_commands(msg)
 
 
 @bot.command()
